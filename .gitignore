@@ -1,1 +1,3 @@
-baseline.json __pycache__
+baseline.json
+__pycache__/
+Monitored_files/

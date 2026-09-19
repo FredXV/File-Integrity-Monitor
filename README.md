@@ -25,15 +25,23 @@ A python based security compliance tool that detects unauthorised changes to fil
 
 ## What I learned
 
-*Structuring a program around a menu loop
-*Using Python's 'hashlib' module to generate SHA256 hashes
-*Using Python's 'os' module to read files from a target folder and check whether a file still exists
-*Using Python's 'json' module to save and load data so it persists between program runs
-*Understanding the 'global' and variable scope inside functions
-*Debugging indentation and inverted logic errors by tracing through code step by step
-*Using .gitignore to exclude generated data files 
-*Structuring with blank lines to make results easier to read
-*Handling user input and different menu options
+Structuring a program around a menu loop
+
+Using Python's 'hashlib' module to generate SHA256 hashes
+
+Using Python's 'os' module to read files from a target folder and check whether a file still exists
+
+Using Python's 'json' module to save and load data so it persists between program runs
+
+Understanding the 'global' and variable scope inside functions
+
+Debugging indentation and inverted logic errors by tracing through code step by step
+
+Using .gitignore to exclude generated data files 
+
+Structuring with blank lines to make results easier to read
+
+Handling user input and different menu options
 
 How to run
 

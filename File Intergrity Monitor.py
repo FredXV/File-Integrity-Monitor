@@ -39,17 +39,28 @@ def check_integrity():
 
     print ("\n--- Running Integrity Check --- ")
 
-    target_files = os.listdir("Monitored_files")
+    for filename in os.listdir("Monitored_files"):
 
-    for filename in target_files:
+        if filename not in baseline_data:
+
+            print (f"New file detected: {filename}")
+
+    print () # Blank line to separate the two sections
+
+    for filename in baseline_data.keys():
 
         file_path = os.path.join("Monitored_files", filename)
-        
+
+        if not os.path.exists(file_path):
+
+            print (f"File not found: {filename}")
+            continue
+
         with open (file_path, "rb") as f:
         
-                file_bytes = f.read()
+            file_bytes = f.read()
         
-                current_hash = hashlib.sha256(file_bytes).hexdigest()
+            current_hash = hashlib.sha256(file_bytes).hexdigest()
                 
         print (f"Checking File: {filename}")
         
@@ -62,10 +73,9 @@ def check_integrity():
             print ("File Changed, Hashes are different")
 
 
+        print () # Blank line after each file's result
 
 
-    
-    
 
 def view_baseline():
 

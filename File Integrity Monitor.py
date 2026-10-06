@@ -35,7 +35,7 @@ def scan_folder(folder):
         for name in filenames:
 
             full_path = os.path.join(dirpath, name)
-            relative = os.path.relpath(full_path, folder)
+            relative = os.path.relpath(full_path, folder).replace(os.sep, "/")
 
             try:
 
@@ -80,32 +80,23 @@ def create_baseline():
     if not os.path.isdir(MONITORED_DIR):
 
         print(f"[ERROR] Folder not found: {MONITORED_DIR}")
-
         return
     
     print ("\n--- Creating Baseline ---")
 
     global baseline_data
 
-    baseline_data = {}
-    target_files = os.listdir(MONITORED_DIR)
-
-    for filename in target_files:
-
-        file_path = os.path.join(MONITORED_DIR, filename)
-
-        if os.path.isdir(file_path): 
-            continue
-
-        file_hash = hash_file(file_path)
-        
-        print (f"Found File: {filename}")
-
-        baseline_data[filename] = file_hash
+    baseline_data, skipped = scan_folder(MONITORED_DIR)
 
     with open (BASELINE_FILE, "w") as f:
 
         json.dump(baseline_data, f)
+
+    print (f"Recorded {len(baseline_data)} files")
+
+    for name in skipped:
+
+        print(f"[WARNING] Could not read: {name}")
 
 def check_integrity():
     
@@ -196,11 +187,7 @@ try:
 except FileNotFoundError:
 
     pass
-old = {"a.txt": "111", "b.txt": "222", "c.txt": "333"}
-new = {"a.txt": "111", "b.txt": "999", "d.txt": "444"}
-print(compare(old, new))
-print(compare(old, old))
-print(compare({}, new))
+
 #MENU
 
 while True:

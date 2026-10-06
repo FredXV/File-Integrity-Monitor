@@ -12,7 +12,28 @@ BASELINE_FILE = os.path.join(BASE_DIR, "baseline.json")
 #Storage for baseline fingerprints
 baseline_data = {}
 
+def scan_folder(folder):
 
+    hashes = {}
+    skipped = []
+
+    for dirpath, dirnames, filenames in os.walk(folder):
+
+        for name in filenames:
+
+            full_path = os.path.join(dirpath, name)
+            relative = os.path.relpath(full_path, folder)
+
+            try:
+
+                hashes[relative] = hash_file(full_path)
+
+            except OSError:
+
+                skipped.append(relative)
+
+    return hashes, skipped
+    
 def hash_file(path, chunk_size = 8192):
 
     sha256 = hashlib.sha256()
@@ -48,8 +69,6 @@ def create_baseline():
         if os.path.isdir(file_path): 
             continue
 
-       
-
         file_hash = hash_file(file_path)
         
         print (f"Found File: {filename}")
@@ -71,7 +90,7 @@ def check_integrity():
         print ("\n[ERROR] No baseline data found. Create a baseline first.")
         return
     
-    print ("\n--- Monitoring Directory... Press Ctrl + C to Stop ---")
+    print ("\n--- Monitoring Directory... Press Ctrl + C to Stop ---\n")
 
 
     try:
@@ -154,7 +173,7 @@ except FileNotFoundError:
 
     pass
     
-
+print(scan_folder(MONITORED_DIR))
 #MENU
 
 while True:
@@ -163,7 +182,7 @@ while True:
 
     print ("\n1. Create Baseline")
 
-    print ("\n2. Run Integrity  Check")
+    print ("\n2. Run Integrity Check")
 
     print ("\n3. View Baseline Data")
 

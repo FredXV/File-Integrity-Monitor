@@ -12,6 +12,19 @@ BASELINE_FILE = os.path.join(BASE_DIR, "baseline.json")
 #Storage for baseline fingerprints
 baseline_data = {}
 
+
+def hash_file(path, chunk_size = 8192):
+
+    sha256 = hashlib.sha256()
+
+    with open(path, "rb") as f:
+
+        while chunk := f.read(chunk_size):
+
+            sha256.update(chunk)
+
+    return sha256.hexdigest()
+
 def scan_folder(folder):
 
     hashes = {}
@@ -33,20 +46,35 @@ def scan_folder(folder):
                 skipped.append(relative)
 
     return hashes, skipped
-    
-def hash_file(path, chunk_size = 8192):
 
-    sha256 = hashlib.sha256()
+def compare(baseline, current):
 
-    with open(path, "rb") as f:
+    modified = []
+    added = []
+    deleted = []
 
-        while chunk := f.read(chunk_size):
+    for path, current_hash in current.items():
 
-            sha256.update(chunk)
+        if path not in baseline:
+            added.append(path)
 
-    return sha256.hexdigest()
+        elif baseline[path] != current_hash:
+            modified.append(path)
 
-    
+    for path in baseline:
+
+        if path not in current:
+            deleted.append(path)
+
+    return {
+
+        "modified": sorted(modified),
+        "added": sorted(added),
+        "deleted": sorted(deleted),
+    }
+
+            
+
 def create_baseline():
 
     if not os.path.isdir(MONITORED_DIR):
@@ -78,9 +106,6 @@ def create_baseline():
     with open (BASELINE_FILE, "w") as f:
 
         json.dump(baseline_data, f)
-
-
-    
 
 def check_integrity():
     
@@ -162,7 +187,6 @@ def view_baseline():
 
         print (f"File: {filename} \nHash: {file_hash}\n")
     
-    
 try:
 
     with open (BASELINE_FILE, "r") as f:
@@ -172,8 +196,11 @@ try:
 except FileNotFoundError:
 
     pass
-    
-print(scan_folder(MONITORED_DIR))
+old = {"a.txt": "111", "b.txt": "222", "c.txt": "333"}
+new = {"a.txt": "111", "b.txt": "999", "d.txt": "444"}
+print(compare(old, new))
+print(compare(old, old))
+print(compare({}, new))
 #MENU
 
 while True:

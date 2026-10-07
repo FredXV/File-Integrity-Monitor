@@ -112,14 +112,12 @@ def check_integrity():
 
     try:
         
-        reported = set()
-
         while True:
 
             current, skipped = scan_folder(MONITORED_DIR)
             changes = compare(baseline_data, current)
 
-            for path in changes ["added"]:
+            for path in changes["added"]:
 
                 key = ("new", path)
 
@@ -128,7 +126,7 @@ def check_integrity():
                     print(f"[ALERT] New file detected: {path}")
                     reported.add(key)
 
-            for path in changes ["modified"]:
+            for path in changes["modified"]:
 
                 key = ("modified", path)
 
@@ -137,7 +135,7 @@ def check_integrity():
                     print (f"[WARNING] File has been modified: {path}")
                     reported.add(key)
 
-            for path in changes ["deleted"]:
+            for path in changes["deleted"]:
 
                 key = ("deleted", path)
 
@@ -150,7 +148,7 @@ def check_integrity():
             
     except KeyboardInterrupt:
 
-            print ("\n--- Monitoring Stopped. returning to Menu. ---")
+            print ("\n--- Monitoring Stopped. Returning to Menu. ---")
                             
 def view_baseline():
 
@@ -211,4 +209,3 @@ while True:
     else:
 
         print ("Invalid, Please choose 1-4.")
-

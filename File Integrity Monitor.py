@@ -108,6 +108,7 @@ def check_integrity():
     
     print ("\n--- Monitoring Directory... Press Ctrl + C to Stop ---\n")
 
+    reported = set()
 
     try:
         
@@ -115,49 +116,35 @@ def check_integrity():
 
         while True:
 
-            for filename in os.listdir(MONITORED_DIR):
+            current, skipped = scan_folder(MONITORED_DIR)
+            changes = compare(baseline_data, current)
 
-                file_path = os.path.join(MONITORED_DIR, filename)
+            for path in changes ["added"]:
 
-                if os.path.isdir(file_path): 
-                    continue
-  
-                if filename not in baseline_data:
+                key = ("new", path)
 
-                    key = ("new", filename)
+                if key not in reported:
 
-                    if key not in reported:
-                    
-                        print (f"[ALERT] New file detected: {filename}")
-                        reported.add(key)
+                    print(f"[ALERT] New file detected: {path}")
+                    reported.add(key)
 
+            for path in changes ["modified"]:
 
-            for filename in baseline_data.keys():
+                key = ("modified", path)
 
-                file_path = os.path.join(MONITORED_DIR, filename)
+                if key not in reported:
 
-                if not os.path.exists(file_path):
+                    print (f"[WARNING] File has been modified: {path}")
+                    reported.add(key)
 
-                    key = ("deleted", filename)
+            for path in changes ["deleted"]:
 
-                    if key not in reported:
-                
-                        print (f"[ALERT] File deleted: {filename}")
-                        reported.add(key)
-                    continue
+                key = ("deleted", path)
 
+                if key not in reported:
 
-                current_hash = hash_file(file_path)
-                        
-                
-                if baseline_data[filename] != current_hash:
-
-                    key = ("modified", filename)
-
-                    if key not in reported:
-
-                        print (f"[WARNING] File has been modified: {filename}")
-                        reported.add(key)
+                    print(f"[ALERT] File deleted: {path}")
+                    reported.add(key)
 
             time.sleep(2)
             

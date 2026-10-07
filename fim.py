@@ -149,7 +149,22 @@ def check_integrity():
     except KeyboardInterrupt:
 
             print ("\n--- Monitoring Stopped. Returning to Menu. ---")
-                            
+
+def load_baseline():
+
+    try:
+
+        with open(BASELINE_FILE, "r") as f:
+            return json.load(f)
+
+    except FileNotFoundError:
+        return {}
+
+    except json.JSONDecodeError:
+
+        print ("[ERROR] baseline.json is corrupted. Create a new baseline.")
+        return {}
+
 def view_baseline():
 
     print ("\n--- Current Baseline Snapshot ---")
@@ -163,49 +178,49 @@ def view_baseline():
 
         print (f"File: {filename} \nHash: {file_hash}\n")
     
-try:
 
-    with open (BASELINE_FILE, "r") as f:
+def main():
 
-        baseline_data = json.load(f)
+    global baseline_data
 
-except FileNotFoundError:
+    baseline_data = load_baseline()
 
-    pass
 
-#MENU
+    while True:
 
-while True:
+        print ("\nFile Integrity Monitor")
 
-    print ("\nFile Integrity Monitor")
+        print ("\n1. Create Baseline")
 
-    print ("\n1. Create Baseline")
+        print ("\n2. Run Integrity Check")
 
-    print ("\n2. Run Integrity Check")
+        print ("\n3. View Baseline Data")
 
-    print ("\n3. View Baseline Data")
+        print ("\n4. Exit")
 
-    print ("\n4. Exit")
+        user_choice = input("\nChoose an option: ")
 
-    user_choice = input("\nChoose an option: ")
+        if user_choice == "1":
 
-    if user_choice == "1":
+            create_baseline()
 
-        create_baseline()
+        elif user_choice == "2":
 
-    elif user_choice == "2":
+            check_integrity()
 
-        check_integrity()
+        elif user_choice == "3":
 
-    elif user_choice == "3":
+            view_baseline()
 
-        view_baseline()
+        elif user_choice == "4":
 
-    elif user_choice == "4":
+            print ("\nExiting...\n")
+            break
 
-        print ("\nExiting...\n")
-        break
+        else:
 
-    else:
+            print ("Invalid, Please choose 1-4.")
 
-        print ("Invalid, Please choose 1-4.")
+if __name__ == "__main__":
+
+    main()

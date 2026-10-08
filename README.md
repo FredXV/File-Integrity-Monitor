@@ -28,13 +28,16 @@ File integrity monitoring is a common security control: if a file's hash changes
 ## Project structure
 
 ```
-File Integrity Monitor/
+File-Integrity-Monitor/
 ├── fim.py              # The file integrity monitor
-├── Monitored_files/    # Folder that gets monitored
+├── Monitored_files/    # Folder that gets monitored (contains sample files)
 ├── tests/
 │   └── test_fim.py     # Pytest unit tests
-└── baseline.json       # Created when you make a baseline (git-ignored)
+├── .gitignore
+└── README.md
 ```
+
+`baseline.json` is generated when you create a baseline and is git-ignored.
 
 ## Getting started
 
